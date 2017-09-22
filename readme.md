@@ -1,7 +1,7 @@
 # VAST content-roll player
 
 Show video content-roll from VAST source. 
-Show and play only if content-rooll is visible in viewport.
+Show and play only if content-roll is visible in viewport.
 
 ## How to use:
 
