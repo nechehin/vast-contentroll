@@ -46,8 +46,10 @@ this._domObserver&&(this._domObserver.disconnect(),this._domObserver=null))};d.p
 
         var FLAG = {
             INIT: 'init',
+            LOADING: 'loading',
             LOADED: 'loaded',
             STARTED: 'started',
+            CONTROLLS: 'controlls',
             DEBUG: 'debug',
             COLLAPSE: 'collapse'
         };
@@ -141,6 +143,13 @@ this._domObserver&&(this._domObserver.disconnect(),this._domObserver=null))};d.p
          * @param {HTMLElement} roll
          */
         function createControlls(roll) {
+
+            if (flag(roll, FLAG.CONTROLLS)) {
+                return;
+            }
+
+            flag(roll, FLAG.CONTROLLS, 1);
+
             roll.muteButton = document.createElement('a');
             roll.muteButton.className = ELEMENTS_CLASS + '--btn-mute';
             roll.muteButton.textContent = muteText(roll);
@@ -274,10 +283,15 @@ this._domObserver&&(this._domObserver.disconnect(),this._domObserver=null))};d.p
             if (flag(roll, FLAG.STARTED)) {
                 roll.adsManager.resume();
                 log(roll, 'resumeAd');
-            } else {
+            }
+            else if (!flag(roll, FLAG.LOADING)) {
                 log(roll, 'load');
                 roll.adsRequest.adTagUrl = data(roll, 'vast');
                 roll.adsLoader.requestAds(roll.adsRequest);
+                flag(roll, FLAG.LOADING, 1)
+            }
+            else {
+                log(roll, 'yet loading');
             }
         }
 
