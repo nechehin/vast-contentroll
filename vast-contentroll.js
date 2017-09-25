@@ -218,9 +218,14 @@ this._domObserver&&(this._domObserver.disconnect(),this._domObserver=null))};d.p
          *
          * @param {HTMLElement} roll
          */
-        function onAdsCompeted(roll, e) {
+        function onAdsCompeted(roll) {
+
             log(roll, 'ALL_ADS_COMPLETED');
-            roll.removeChild(roll.muteButton);
+
+            if (roll.muteButton) {
+                roll.removeChild(roll.muteButton);
+            }
+
             intersectionObserver.unobserve(roll);
 
             // If companionAds not empty - show it
@@ -281,8 +286,11 @@ this._domObserver&&(this._domObserver.disconnect(),this._domObserver=null))};d.p
             }, false);
 
             roll.adsLoader.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, function(adErrorEvent) {
-                console.log(adErrorEvent.getError());
-                roll.adsManager.destroy();
+                log(roll, 'error or empty ad', adErrorEvent.getError());
+                if (typeof roll.adsManager !== 'undefined') {
+                    roll.adsManager.destroy();
+                }
+                onAdsCompeted(roll);
             }, false);
 
             flag(roll, FLAG.INIT, 1);
