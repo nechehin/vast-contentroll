@@ -51,7 +51,8 @@ this._domObserver&&(this._domObserver.disconnect(),this._domObserver=null))};d.p
             STARTED: 'started',
             CONTROLLS: 'controlls',
             DEBUG: 'debug',
-            COLLAPSE: 'collapse'
+            COLLAPSE: 'collapse',
+            COMPANION: 'companion'
         };
 
         var rolls = document.getElementsByClassName(ELEMENTS_CLASS);
@@ -195,9 +196,20 @@ this._domObserver&&(this._domObserver.disconnect(),this._domObserver=null))};d.p
          *
          * @param {HTMLElement} roll
          */
-        function onAdsStarted(roll) {
+        function onAdsStarted(roll, e) {
             flag(roll, FLAG.STARTED, 1);
             createControlls(roll);
+
+            if (flag(roll, FLAG.COMPANION)) {
+                log(roll, 'get a list of companion ads');
+                var ad = e.getAd();
+                var selectionCriteria = new google.ima.CompanionAdSelectionSettings();
+                selectionCriteria.resourceType = google.ima.CompanionAdSelectionSettings.ResourceType.STATIC;
+                selectionCriteria.creativeType = google.ima.CompanionAdSelectionSettings.CreativeType.IMAGE;
+                selectionCriteria.sizeCriteria = google.ima.CompanionAdSelectionSettings.SizeCriteria.IGNORE;
+                roll.companionAds = ad.getCompanionAds(roll.clientWidth, roll.clientHeight, selectionCriteria);
+                log(roll, 'getted companion ads count: ' + roll.companionAds.length);
+            }
         }
 
 
@@ -206,12 +218,17 @@ this._domObserver&&(this._domObserver.disconnect(),this._domObserver=null))};d.p
          *
          * @param {HTMLElement} roll
          */
-        function onAdsCompeted(roll) {
+        function onAdsCompeted(roll, e) {
             log(roll, 'ALL_ADS_COMPLETED');
             roll.removeChild(roll.muteButton);
             intersectionObserver.unobserve(roll);
 
-            if (flag(roll, FLAG.COLLAPSE)) {
+            // If companionAds not empty - show it
+            if (flag(roll, FLAG.COMPANION) && roll.companionAds && roll.companionAds.length) {
+                roll.innerHTML = roll.companionAds[0].getContent();
+                roll.style.height = 'auto';
+                log(roll, 'display companion');
+            } else if (flag(roll, FLAG.COLLAPSE)) {
                 roll.style.height = '0';
                 log(roll, 'ads collapsed');
             }
@@ -243,16 +260,16 @@ this._domObserver&&(this._domObserver.disconnect(),this._domObserver=null))};d.p
 
                 roll.adsManager = adsManagerLoadedEvent.getAdsManager(document.createElement('video'));
 
-                roll.adsManager.addEventListener(google.ima.AdEvent.Type.LOADED, function() {
-                    onAdsLoaded(roll);
+                roll.adsManager.addEventListener(google.ima.AdEvent.Type.LOADED, function(e) {
+                    onAdsLoaded(roll, e);
                 });
 
-                roll.adsManager.addEventListener(google.ima.AdEvent.Type.STARTED, function() {
-                    onAdsStarted(roll);
+                roll.adsManager.addEventListener(google.ima.AdEvent.Type.STARTED, function(e) {
+                    onAdsStarted(roll, e);
                 });
 
-                roll.adsManager.addEventListener(google.ima.AdEvent.Type.ALL_ADS_COMPLETED, function() {
-                    onAdsCompeted(roll);
+                roll.adsManager.addEventListener(google.ima.AdEvent.Type.ALL_ADS_COMPLETED, function(e) {
+                    onAdsCompeted(roll, e);
                 });
 
                 try {
