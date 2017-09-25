@@ -3,6 +3,10 @@
 Show video content-roll from VAST source. 
 Show and play only if content-roll is visible in viewport.
 
+Used:
+- Google IMA SDK
+- IntersectionObserver (with polyfill)
+
 ## How to use:
 
 Insert to your page content:
