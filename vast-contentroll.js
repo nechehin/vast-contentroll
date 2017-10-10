@@ -52,7 +52,8 @@ this._domObserver&&(this._domObserver.disconnect(),this._domObserver=null))};d.p
             CONTROLLS: 'controlls',
             DEBUG: 'debug',
             COLLAPSE: 'collapse',
-            COMPANION: 'companion'
+            COMPANION: 'companion',
+            RESPONSIVE: 'responsive'
         };
 
         var rolls = document.getElementsByClassName(ELEMENTS_CLASS);
@@ -241,6 +242,28 @@ this._domObserver&&(this._domObserver.disconnect(),this._domObserver=null))};d.p
 
 
         /**
+         * Adapt roll size
+         *
+         * @param {HTMLElement} roll
+         */
+        function adaptSize(roll) {
+            var width = roll.clientWidth;
+            var height = roll.clientHeight;
+            var newWidth = roll.parentNode.clientWidth;
+            var newHeight = height * (newWidth/width);
+
+            if (newWidth > width) {
+                log(roll, 'adapt size skiped');
+                return;
+            }
+
+            roll.style.width = newWidth + 'px';
+            roll.style.height = newHeight + 'px';
+            log(roll, 'size adapted');
+        }
+
+
+        /**
          * Init ads
          *
          * @param {HTMLElement} roll
@@ -249,6 +272,10 @@ this._domObserver&&(this._domObserver.disconnect(),this._domObserver=null))};d.p
 
             if (flag(roll, FLAG.INIT)) {
                 return;
+            }
+
+            if (flag(roll, FLAG.RESPONSIVE)) {
+                adaptSize(roll);
             }
 
             intersectionObserver.observe(roll);
