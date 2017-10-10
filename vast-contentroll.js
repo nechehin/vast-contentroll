@@ -35,6 +35,7 @@ this._domObserver&&(this._domObserver.disconnect(),this._domObserver=null))};d.p
 /*!
  * VAST content-roll
  *
+ * @version 0.0.6
  * @link https://github.com/nechehin/vast-contentroll
  */
 (function(){
