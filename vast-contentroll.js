@@ -35,7 +35,7 @@ this._domObserver&&(this._domObserver.disconnect(),this._domObserver=null))};d.p
 /*!
  * VAST content-roll
  *
- * @version 0.0.8
+ * @version 0.0.9
  * @link https://github.com/nechehin/vast-contentroll
  */
 (function(){
@@ -255,6 +255,7 @@ this._domObserver&&(this._domObserver.disconnect(),this._domObserver=null))};d.p
          */
         function onAdsEmpty(roll) {
             intersectionObserver.unobserve(roll);
+            roll.style.height = '0';
 
             var onEmptyCallback = data(roll, 'on-empty');
             if (typeof window[onEmptyCallback] === 'function') {
