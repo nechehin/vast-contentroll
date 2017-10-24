@@ -35,7 +35,7 @@ this._domObserver&&(this._domObserver.disconnect(),this._domObserver=null))};d.p
 /*!
  * VAST content-roll
  *
- * @version 0.0.7
+ * @version 0.0.8
  * @link https://github.com/nechehin/vast-contentroll
  */
 (function(){
@@ -111,9 +111,10 @@ this._domObserver&&(this._domObserver.disconnect(),this._domObserver=null))};d.p
          * @param {HTMLElement} roll
          * @param {String} message
          */
-        function log(roll, message) {
+        function log(roll, message, context) {
             if (flag(roll, FLAG.DEBUG)) {
-                console.log('vast-contentroll:', message);
+                context = context || '';
+                console.log('vast-contentroll:', message, context);
             }
         }
 
@@ -239,6 +240,26 @@ this._domObserver&&(this._domObserver.disconnect(),this._domObserver=null))};d.p
                 roll.style.height = '0';
                 log(roll, 'ads collapsed');
             }
+
+            var onCompleteCallback = data(roll, 'on-complete');
+            if (typeof window[onCompleteCallback] === 'function') {
+                window[onCompleteCallback]();
+            }
+        }
+
+
+        /**
+         * On ads empty callback
+         *
+         * @param {HTMLElement} roll
+         */
+        function onAdsEmpty(roll) {
+            intersectionObserver.unobserve(roll);
+
+            var onEmptyCallback = data(roll, 'on-empty');
+            if (typeof window[onEmptyCallback] === 'function') {
+                window[onEmptyCallback]();
+            }
         }
 
 
@@ -292,7 +313,11 @@ this._domObserver&&(this._domObserver.disconnect(),this._domObserver=null))};d.p
             // Add event listeners
             roll.adsLoader.addEventListener(google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED, function(adsManagerLoadedEvent) {
 
-                roll.adsManager = adsManagerLoadedEvent.getAdsManager(document.createElement('video'));
+                var player = document.createElement('video');
+                player.muted = true;
+                player.autoplay = true;
+
+                roll.adsManager = adsManagerLoadedEvent.getAdsManager(player);
 
                 roll.adsManager.addEventListener(google.ima.AdEvent.Type.LOADED, function(e) {
                     onAdsLoaded(roll, e);
@@ -311,6 +336,7 @@ this._domObserver&&(this._domObserver.disconnect(),this._domObserver=null))};d.p
                     roll.adsManager.start();
                 } catch (adError) {
                     log(roll, 'error or empty ad', adError);
+                    onAdsEmpty(roll);
                 }
             }, false);
 
@@ -319,7 +345,7 @@ this._domObserver&&(this._domObserver.disconnect(),this._domObserver=null))};d.p
                 if (typeof roll.adsManager !== 'undefined') {
                     roll.adsManager.destroy();
                 }
-                onAdsCompeted(roll);
+                onAdsEmpty(roll);
             }, false);
 
             flag(roll, FLAG.INIT, 1);

@@ -33,6 +33,8 @@ Options can sets as data attributes:
 - data-collapse - collapse div after ads completed, true or false, default false
 - data-companion - show companion ads image after video ads competed, true or false, default false
 - data-responsive - adapt size to parent container, if vast-contentroll width < parent container width, true or false, default false
+- data-on-complete - function name, will be called if ads is complete
+- data-on-empty - function name, will be called if ads is empty
 
 Example:
 
