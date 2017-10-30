@@ -35,7 +35,7 @@ this._domObserver&&(this._domObserver.disconnect(),this._domObserver=null))};d.p
 /*!
  * VAST content-roll
  *
- * @version 0.0.9
+ * @version 0.0.10
  * @link https://github.com/nechehin/vast-contentroll
  */
 (function(){
@@ -156,7 +156,7 @@ this._domObserver&&(this._domObserver.disconnect(),this._domObserver=null))};d.p
 
             roll.muteButton = document.createElement('a');
             roll.muteButton.className = ELEMENTS_CLASS + '--btn-mute';
-            roll.muteButton.textContent = muteText(roll);
+            roll.muteButton.textContent = roll.adsManager.getVolume() === 0 ? unmuteText(roll) : muteText(roll);
 
             /* Mute button styles */
             roll.muteButton.style.position = 'relative';
