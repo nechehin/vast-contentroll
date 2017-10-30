@@ -201,6 +201,7 @@ this._domObserver&&(this._domObserver.disconnect(),this._domObserver=null))};d.p
          */
         function onAdsStarted(roll, e) {
             flag(roll, FLAG.STARTED, 1);
+            log(roll, 'ads started');
             createControlls(roll);
 
             if (flag(roll, FLAG.COMPANION)) {
@@ -223,7 +224,7 @@ this._domObserver&&(this._domObserver.disconnect(),this._domObserver=null))};d.p
          */
         function onAdsCompeted(roll) {
 
-            log(roll, 'ALL_ADS_COMPLETED');
+            log(roll, 'all ads competed');
 
             if (roll.muteButton) {
                 roll.removeChild(roll.muteButton);
@@ -308,6 +309,7 @@ this._domObserver&&(this._domObserver.disconnect(),this._domObserver=null))};d.p
             roll.adDisplayContainer.initialize();
 
             roll.adsLoader = new google.ima.AdsLoader(roll.adDisplayContainer);
+            roll.adsLoader.getSettings().setDisableCustomPlaybackForIOS10Plus(true);
 
             roll.adsRequest = new google.ima.AdsRequest();
 
@@ -317,6 +319,7 @@ this._domObserver&&(this._domObserver.disconnect(),this._domObserver=null))};d.p
                 var player = document.createElement('video');
                 player.muted = true;
                 player.autoplay = true;
+                player.playsinline = true;
 
                 roll.adsManager = adsManagerLoadedEvent.getAdsManager(player);
 
