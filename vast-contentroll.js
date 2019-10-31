@@ -35,7 +35,7 @@ this._domObserver&&(this._domObserver.disconnect(),this._domObserver=null))};d.p
 /*!
  * VAST content-roll
  *
- * @version 0.0.10
+ * @version 0.0.11
  * @link https://github.com/nechehin/vast-contentroll
  */
 (function(){
@@ -281,6 +281,8 @@ this._domObserver&&(this._domObserver.disconnect(),this._domObserver=null))};d.p
                 return;
             }
 
+            roll.style.position = 'relative';
+            roll.style.overflow = 'hidden';
             roll.style.width = newWidth + 'px';
             roll.style.height = newHeight + 'px';
             roll.style.maxWidth = '100%';
