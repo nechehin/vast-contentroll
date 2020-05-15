@@ -35,7 +35,7 @@ this._domObserver&&(this._domObserver.disconnect(),this._domObserver=null))};d.p
 /*!
  * VAST content-roll
  *
- * @version 0.0.11
+ * @version 0.0.12
  * @link https://github.com/nechehin/vast-contentroll
  */
 (function(){
@@ -238,7 +238,7 @@ this._domObserver&&(this._domObserver.disconnect(),this._domObserver=null))};d.p
                 roll.style.height = 'auto';
                 log(roll, 'display companion');
             } else if (flag(roll, FLAG.COLLAPSE)) {
-                roll.style.height = '0';
+                roll.style.display = 'none';
                 log(roll, 'ads collapsed');
             }
 
